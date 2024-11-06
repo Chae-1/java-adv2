@@ -231,4 +231,65 @@ public class CreateFileV3 {
   - 동기화 코드가 있어 스레드 안전하지만 그로 인한 성능저하가 있다.
 
 ### 스트림에서 문자 다루기
+- String.getBytes(Charset)
+  - String을 byte로 변환할 때 사용하는 API.
+  - 문자를 byte 숫자로 변경해야 하기 때문에 반드시 문자 집합을 지정해야한다.
+- new String(byte[], Charset)
+  - byte를 String으로 변환할 때도 마찬가지로 Charset과 byte가 필요
+
+번거롭게 직접 String을 byte로 변환하지 않고 byte를 직접 String으로 변환할 필요 없이 읽기, 쓰기가 가능하도록하는 보조 스트림이 존재한다.
+
+#### OutputStreamWriter, InputStreamReader
+```java
+public class ReaderWriterMainV2 {
+
+    public static void main(String[] args) throws IOException {
+        String writeString = "가나다";
+        System.out.println("write String: " + writeString);
+
+        // 파일에 쓰기
+        FileOutputStream fos = new FileOutputStream(FILE_NAME);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, UTF_8);
+
+        osw.write(writeString);
+        osw.close();
+
+        // 파일에서 읽기.
+        FileInputStream fis = new FileInputStream(FILE_NAME);
+        InputStreamReader isr = new InputStreamReader(fis, UTF_8);
+
+        StringBuilder content = new StringBuilder();
+        int ch;
+        while ((ch = isr.read()) != -1) {
+            content.append((char) ch);
+        }
+        isr.close();
+
+        System.out.println("content = " + content);
+    }
+
+}
+```
+- OutputStreamWriter
+  - 문자를 입력받고 받은 문자를 인코딩해서 byte[]로 변환한다.
+  - 이후, 전달받은 스트림을 통해 반환 결과를 전달한다.
+- InputStreamReader
+  - 문자에 대한 byte를 읽어들여 int로 반환한다.
+  - char가 -1을 표현할 수 없어 int로 반환한다.
+  - byte[]를 문자로 변환하기 위해 Charset이 필요하다.
+
+### Reader, Writer
+자바에서는 byte를 다루기 위한 I/O 클래스와 문자를 다루는 I/O 클래스가 존재한다.
+
+#### InputStream, OutputStream
+- xxxInputStream, xxxOutputStream은 byte를 단위를 다루는 클래스이다.
+- 클래스 이름 마지막에 OutputStream, InputStream이 붙어있다.
+
+#### Writer, Reader
+- char, String 같은 문자를 다루는 클래스이다.
+- 클래스 이름 마지막에 Reader, Writer가 붙어있다.
+- 모든 데이터는 byte 단위로 저장된다. 결과적으로 내부에서는 byte로 변환해서 저장한다.
+- 결국 Writer, Reader 클래스들은 내부적으로 Input, OutputStream을 사용한다.
+- BufferedWriter, Reader를 통해 한 줄 단위로 읽고 쓸 수 있다.
+
 
