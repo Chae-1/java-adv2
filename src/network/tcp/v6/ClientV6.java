@@ -22,6 +22,7 @@ public class ClientV6 {
             while (true) {
                 System.out.print("전송 문자: ");
                 String toSend = scanner.nextLine();
+
                 // 서버에게 문자 보내기
                 output.writeUTF(toSend);
                 log("client -> server: " + toSend);

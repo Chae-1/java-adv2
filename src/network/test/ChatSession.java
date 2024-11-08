@@ -13,8 +13,8 @@ public class ChatSession implements Runnable {
     private final Socket socket;
     private final DataInputStream dis;
     private final DataOutputStream dos;
-    private final ChatManager chatManager;
 
+    private final ChatManager chatManager;
     private String memberName;
 
     public ChatSession(Socket socket, ChatManager chatManager) throws IOException {
@@ -22,8 +22,6 @@ public class ChatSession implements Runnable {
         this.chatManager = chatManager;
         this.dis = new DataInputStream(socket.getInputStream());
         this.dos = new DataOutputStream(socket.getOutputStream());
-        this.memberName = dis.readUTF();
-        chatManager.addUser(this);
     }
 
     public String getMemberName() {
@@ -32,13 +30,18 @@ public class ChatSession implements Runnable {
 
     @Override
     public void run() {
-        log("채팅 방 입장: " + socket);
         try {
             while (true) {
                 String line = dis.readUTF();
                 String[] commandAndMessage = line.split("[|]");
 
                 String command = commandAndMessage[0];
+
+                if ("/join".equals(command)) {
+                    memberName = commandAndMessage[1];
+                    chatManager.join(this);
+                }
+
                 if ("/exit".equals(command)) {
                     chatManager.remove(this);
                     break;
@@ -46,7 +49,7 @@ public class ChatSession implements Runnable {
 
                 if ("/message".equals(command)) {
                     String message = commandAndMessage[1];
-                    chatManager.sendMessage(this, message);
+                    chatManager.sendMessage(this, memberName + ": "+ message);
                     continue;
                 }
 
