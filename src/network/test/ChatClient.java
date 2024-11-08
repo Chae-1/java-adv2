@@ -1,5 +1,6 @@
 package network.test;
 
+import static network.tcp.SocketCloseUtil.close;
 import static util.MyLogger.log;
 
 import java.io.DataInputStream;
@@ -23,6 +24,9 @@ public class ChatClient implements Runnable {
                 log(s);
             }
         } catch (IOException e) {
+            log(e);
+        } finally {
+            close(dis);
         }
     }
 }

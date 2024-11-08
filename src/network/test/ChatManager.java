@@ -11,7 +11,7 @@ public class ChatManager {
 
     public void addUser(ChatSession chatSession) {
         sessions.add(chatSession);
-        sendMessage(chatSession, chatSession.getMemberName());
+        sendMessage(chatSession, chatSession.getMemberName() + "님이 입장하셨습니다.");
     }
 
     // 1. chatSession에서 다른 session들에게 message를 전송
@@ -20,6 +20,7 @@ public class ChatManager {
         for (ChatSession session : sessions) {
            // 다른 세션이면
            if (session != chatSession) {
+               log("다른 세션에 메시지를 전송합니다. " + session.getMemberName());
                session.sendMessage(message);
            }
         }
@@ -35,8 +36,7 @@ public class ChatManager {
         for (ChatSession session : sessions) {
             String memberName = session.getMemberName();
             System.out.println(memberName);
-            sb.append(memberName)
-                    .append("\n");
+            sb.append(memberName).append(" ");
         }
         return sb.toString();
     }

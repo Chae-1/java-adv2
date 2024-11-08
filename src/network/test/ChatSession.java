@@ -23,6 +23,7 @@ public class ChatSession implements Runnable {
         this.dis = new DataInputStream(socket.getInputStream());
         this.dos = new DataOutputStream(socket.getOutputStream());
         this.memberName = dis.readUTF();
+        chatManager.addUser(this);
     }
 
     public String getMemberName() {
@@ -38,10 +39,9 @@ public class ChatSession implements Runnable {
                 String[] commandAndMessage = line.split("[|]");
 
                 String command = commandAndMessage[0];
-
-                if ("/join".equals(command)) {
-                    chatManager.addUser(this);
-                    continue;
+                if ("/exit".equals(command)) {
+                    chatManager.remove(this);
+                    break;
                 }
 
                 if ("/message".equals(command)) {
@@ -50,25 +50,20 @@ public class ChatSession implements Runnable {
                     continue;
                 }
 
-                if ("/exit".equals(command)) {
-                    chatManager.remove(this);
-                    break;
-                }
 
                 if ("/users".equals(command)) {
                     String allMembers = chatManager.getAllActiveMembers();
                     log("allMembers: " + allMembers);
-                    dos.writeUTF(allMembers);
+                    dos.writeUTF("전체 사용자: " + allMembers);
                     continue;
                 }
 
                 if ("/change".equals(command)) {
+                    String beforeName = memberName;
                     memberName = commandAndMessage[1];
-                    log("memberName: " + memberName);
-                    dos.writeUTF(memberName);
+                    dos.writeUTF(beforeName + " -> " + memberName);
                 }
             }
-
         } catch (IOException e) {
             log(e);
         } finally {
