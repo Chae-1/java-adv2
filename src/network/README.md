@@ -71,7 +71,6 @@ public class ServerV1 {
 }
 ```
 **클라이언트**
-![img.png](img.png)
 - 호스트가 localhost 이면서 포트 번호가 12345인 호스트에 TCP 연결 요청을 시도한다.
   - localhost 라는 호스트를 통해 IP를 찾기 위해 내부적으로 InetAddress 클래스를 사용한다.
   - 결과적으로 127.0.0.1:12345에 TCP 연결 시도한다.
@@ -79,7 +78,6 @@ public class ServerV1 {
   - Socket은 데이터를 주고받기 위한 InputStream, OutputStream을 제공한다.
 
 **서버**
-![img_1.png](img_1.png)
 - 클라이언트의 요청을 받아들이기 위해 특정 포트를 열어두어야 한다.
 - 이때, 서버는 ServerSocket을 사용한다.
   - 클라이언트가 해당 포트로 서버에 연결할 수 있게된다.
@@ -123,7 +121,6 @@ public class ServerV2 {
     }
 }
 ```
-![img_3.png](img_3.png)
 - ServerSocket 을 통해 연결 요청을 시도하면 OS 내부적으로 3 way handshake가 발생하고 TCP 연결이 완료된다.
   - Socket 객체가 없다고 해서 TCP 연결이 안되는 것이 아니다.
 - accept() 메서드를 통해 backlog queue를 조회한 뒤 Socket 객체를 생성하는 것이다.
@@ -225,7 +222,6 @@ public class SoTimeoutClient {
 - 소켓 연결 시점에 timeout을 지정할 수 있다.
 - read 타임아웃도 설정할 수 있다.
 ### 정상 종료
-![img_4.png](img_4.png)
 - TCP의 정상 연결 종료 과정은 다음과 같다.
 - 서버나 클라이언트가 연결 종료를 요청하는 FIN 패킷을 전송한다.
 - FIN 패킷을 전송받은 호스트는 ACK 패킷을 응답으로 전송한다. 이때 절반 연결이 닫히게 된다.
@@ -287,7 +283,6 @@ public class NormalCloseClient {
 
 ### 강제 종료
 TCP 연결 도중 문제가 발생하면 RST 패킷이 발생한다.
-![img_5.png](img_5.png)
 - 절반 연결 해제 작업이 수행된다. (FIN에 대한 ACK 패킷 전송 까지)
 - 서버 -> 클라이언트 방향에 대한 스트림은 닫힌다.
 - 이 때, 클라이언트가 데이터를 전송할 수는 있지만 그에 대한 응답을 보낼 수 없기때문에 문제가 발생할 수 있다.
@@ -340,6 +335,4 @@ public class ResetCloseClient {
 
 }
 ```
-- 반 연결 상태에서 read, write 작업을 수행하면
-- 
 
